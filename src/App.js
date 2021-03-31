@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+// import firebase from "firebase/app";
+// import "firebase/auth";
+import { Container, Typography, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import firebaseConfig from "./firebase.config";
 
-function App() {
+// firebase.initializeApp(firebaseConfig);
+
+const useStyle = makeStyles({
+  header: {
+    marginBottom: "20px",
+  },
+});
+
+const App = () => {
+  const classes = useStyle();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container maxWidth="md" align="center">
+      <Typography variant="h4" className={classes.header}>
+        Firebase Authentication App
+      </Typography>
+      <Button variant="contained" color="primary">
+        Sign In With Google
+      </Button>
+    </Container>
   );
-}
+};
 
 export default App;
