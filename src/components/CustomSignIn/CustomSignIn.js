@@ -1,4 +1,4 @@
-import { Button, Card, Grid, CardContent, Typography, TextField } from "@material-ui/core";
+import { Button, Card, Grid, CardContent, Typography, TextField, FormControlLabel, Checkbox } from "@material-ui/core";
 import './CustomSignIn.css';
 import firebase from "./../../firebase/init";
 import { makeStyles } from '@material-ui/styles';
@@ -13,14 +13,14 @@ const useStyles = makeStyles({
 
 const CustomSignIn = () => {
   const classes = useStyles();
-
+  const [isLogged, setLogged] = useState(false);
   const [user, setUser] = useState({
     name: '',
     email: '',
     password: '',
-    isSignIn: false,
+    isSignIn: '',
     isError: ''
-  })
+  });
 
   let isValid = false;
   const handleInput = (event) => {
@@ -44,7 +44,7 @@ const CustomSignIn = () => {
         .createUserWithEmailAndPassword(user.email, user.password)
         .then(userCredential => {
           const newUser = { ...user };
-          newUser.isSignIn = true;
+          newUser.isSignIn = 'User Created Successfully!';
           setUser(newUser)
           e.target.reset();
         })
@@ -56,21 +56,56 @@ const CustomSignIn = () => {
         });
     }
   }
-
-  console.log(user);
   return (
     <Grid item md={6}>
       <Card>
         <CardContent>
           <Typography
-            gutterBottom
             variant="h5"
             component="h2"
-            style={{ marginBottom: "20px" }}
+            style={{ marginBottom: "15px" }}
           >
             Sign In with Email & Password
           </Typography>
+          {user.isSignIn && (
+            <Typography
+              variant="p"
+              style={{ marginBottom: "10px", color: "green" }}
+            >
+              {user.isSignIn}
+            </Typography>
+          )}
+          {user.isError && (
+            <Typography
+              variant="p"
+              style={{ marginBottom: "10px", color: "red" }}
+            >
+              {user.isError}
+            </Typography>
+          )}
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isLogged}
+                onChange={() => setLogged(!isLogged)}
+                name="checkedB"
+                color="primary"
+              />
+            }
+            label="Already Have an Account!"
+          />
           <form onSubmit={handleSubmit}>
+            {!isLogged && (
+              <TextField
+                id="outlined-basic"
+                className={classes.inputBox}
+                label="Name"
+                variant="outlined"
+                type="text"
+                name="name"
+                onBlur={handleInput}
+              />
+            )}
             <TextField
               id="outlined-basic"
               className={classes.inputBox}
@@ -89,9 +124,25 @@ const CustomSignIn = () => {
               name="password"
               onBlur={handleInput}
             />
-            <Button variant="contained" type="submit" color="primary" fullWidth>
-              Sign Up
-            </Button>
+            {isLogged ? (
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                fullWidth
+              >
+                Sign In
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                fullWidth
+              >
+                Sign Up
+              </Button>
+            )}
           </form>
         </CardContent>
       </Card>
