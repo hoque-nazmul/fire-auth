@@ -1,10 +1,8 @@
-// import firebase from "firebase/app";
-// import "firebase/auth";
-import { Container, Typography, Button } from "@material-ui/core";
+import { Container, Typography, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import firebaseConfig from "./firebase.config";
+import CustomSignIn from "./components/CustomSignIn/CustomSignIn";
+import GoogleSignIn from "./components/GoogleSignIn/GoogleSignIn";
 
-// firebase.initializeApp(firebaseConfig);
 
 const useStyle = makeStyles({
   header: {
@@ -12,16 +10,20 @@ const useStyle = makeStyles({
   },
 });
 
+
+
 const App = () => {
   const classes = useStyle();
+
   return (
     <Container maxWidth="md" align="center">
       <Typography variant="h4" className={classes.header}>
         Firebase Authentication App
       </Typography>
-      <Button variant="contained" color="primary">
-        Sign In With Google
-      </Button>
+      <Grid container spacing={2}>
+        <GoogleSignIn />
+        <CustomSignIn />
+      </Grid>
     </Container>
   );
 };
