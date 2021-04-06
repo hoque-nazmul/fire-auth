@@ -19,12 +19,45 @@ const CustomSignIn = () => {
     email: '',
     password: '',
     isSignIn: false,
-    isError: false
+    isError: ''
   })
 
+  let isValid = false;
   const handleInput = (event) => {
-    console.log(event.target.name, event.target.value);
+    if (event.target.name === 'email') {
+      isValid = /\S+@\S+\.\S+/.test(event.target.value);
+    }
+    if (event.target.name === 'password') {
+      isValid = event.target.value.length >= 6;
+    }
+    if (isValid) {
+      const newUser = { ...user }
+      newUser[event.target.name] = event.target.value;
+      setUser(newUser);
+    }
   }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (user.email && user.password) {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(user.email, user.password)
+        .then(userCredential => {
+          const newUser = { ...user };
+          newUser.isSignIn = true;
+          setUser(newUser)
+          e.target.reset();
+        })
+        .catch(error => {
+          const newUser = { ...user };
+          newUser.isSignIn = false;
+          newUser.isError = error.message;
+          setUser(newUser);
+        });
+    }
+  }
+
+  console.log(user);
   return (
     <Grid item md={6}>
       <Card>
@@ -37,7 +70,7 @@ const CustomSignIn = () => {
           >
             Sign In with Email & Password
           </Typography>
-          <form autoComplete="off">
+          <form onSubmit={handleSubmit}>
             <TextField
               id="outlined-basic"
               className={classes.inputBox}
@@ -56,7 +89,7 @@ const CustomSignIn = () => {
               name="password"
               onBlur={handleInput}
             />
-            <Button variant="contained" color="primary" fullWidth>
+            <Button variant="contained" type="submit" color="primary" fullWidth>
               Sign Up
             </Button>
           </form>
