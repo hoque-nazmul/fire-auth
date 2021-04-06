@@ -22,7 +22,21 @@ const CustomSignIn = () => {
     isError: ''
   });
 
-  let isValid = false;
+  const updateUserName = name => {
+    const user = firebase.auth().currentUser;
+    user
+      .updateProfile({
+        displayName: name,
+      })
+      .then(() => {
+        console.log('successfully updated name');
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  }
+
+  let isValid = true;
   const handleInput = (event) => {
     if (event.target.name === 'email') {
       isValid = /\S+@\S+\.\S+/.test(event.target.value);
@@ -43,11 +57,12 @@ const CustomSignIn = () => {
         firebase
           .auth()
           .signInWithEmailAndPassword(user.email, user.password)
-            .then((userCredential) => {
+            .then(res => {
               const newUser = { ...user };
               newUser.isSignIn = "User Sign in Successfully!";
               setUser(newUser);
               e.target.reset();
+              console.log(res.user);
             })
             .catch((error) => {
               const newUser = { ...user };
@@ -65,6 +80,7 @@ const CustomSignIn = () => {
             const newUser = { ...user };
             newUser.isSignIn = "User Created Successfully!";
             setUser(newUser);
+            updateUserName(user.name);
             e.target.reset();
           })
           .catch((error) => {
@@ -89,7 +105,7 @@ const CustomSignIn = () => {
           </Typography>
           {user.isSignIn && (
             <Typography
-              variant="p"
+              variant="body1"
               style={{ marginBottom: "10px", color: "green", display: 'block' }}
             >
               {user.isSignIn}
@@ -97,7 +113,7 @@ const CustomSignIn = () => {
           )}
           {user.isError && (
             <Typography
-              variant="p"
+              variant="body1"
               style={{ marginBottom: "10px", color: "red", display: 'block' }}
             >
               {user.isError}
