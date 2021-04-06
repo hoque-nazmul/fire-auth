@@ -38,22 +38,42 @@ const CustomSignIn = () => {
   }
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (user.email && user.password) {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(user.email, user.password)
-        .then(userCredential => {
-          const newUser = { ...user };
-          newUser.isSignIn = 'User Created Successfully!';
-          setUser(newUser)
-          e.target.reset();
-        })
-        .catch(error => {
-          const newUser = { ...user };
-          newUser.isSignIn = false;
-          newUser.isError = error.message;
-          setUser(newUser);
-        });
+    if (isLogged) {
+      if (user.email && user.password) {
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(user.email, user.password)
+            .then((userCredential) => {
+              const newUser = { ...user };
+              newUser.isSignIn = "User Sign in Successfully!";
+              setUser(newUser);
+              e.target.reset();
+            })
+            .catch((error) => {
+              const newUser = { ...user };
+              newUser.isSignIn = false;
+              newUser.isError = error.message;
+              setUser(newUser);
+            });
+      }
+    } else {
+      if (user.email && user.password) {
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(user.email, user.password)
+          .then((userCredential) => {
+            const newUser = { ...user };
+            newUser.isSignIn = "User Created Successfully!";
+            setUser(newUser);
+            e.target.reset();
+          })
+          .catch((error) => {
+            const newUser = { ...user };
+            newUser.isSignIn = false;
+            newUser.isError = error.message;
+            setUser(newUser);
+          });
+      }
     }
   }
   return (
@@ -70,7 +90,7 @@ const CustomSignIn = () => {
           {user.isSignIn && (
             <Typography
               variant="p"
-              style={{ marginBottom: "10px", color: "green" }}
+              style={{ marginBottom: "10px", color: "green", display: 'block' }}
             >
               {user.isSignIn}
             </Typography>
@@ -78,7 +98,7 @@ const CustomSignIn = () => {
           {user.isError && (
             <Typography
               variant="p"
-              style={{ marginBottom: "10px", color: "red" }}
+              style={{ marginBottom: "10px", color: "red", display: 'block' }}
             >
               {user.isError}
             </Typography>
